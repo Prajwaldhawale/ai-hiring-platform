@@ -13,6 +13,7 @@ const Profile = () => {
   const [uploadError, setUploadError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [isDragActive, setIsDragActive] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   
   const fileInputRef = useRef(null);
 
@@ -122,9 +123,7 @@ const Profile = () => {
   };
 
   const handleDeleteResume = async () => {
-    if (!window.confirm("Are you sure you want to delete your resume? This will clear your parsed skills and experience.")) {
-      return;
-    }
+    setShowDeleteConfirm(false);
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE}/applications/profile/resume`, {
@@ -188,21 +187,42 @@ const Profile = () => {
                       <p style={{ fontSize: '12px', color: '#9ca3af' }}>Successfully parsed and matched</p>
                     </div>
                   </div>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <a 
-                      href={`${API_BASE}${profile.resume_url}`} 
-                      target="_blank" 
-                      rel="noreferrer"
-                      style={styles.downloadBtn}
-                    >
-                      Download
-                    </a>
-                    <button 
-                      onClick={handleDeleteResume}
-                      style={styles.deleteBtn}
-                    >
-                      <Trash size={16} />
-                    </button>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    {showDeleteConfirm ? (
+                      <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                        <span style={{ fontSize: '12px', color: '#f87171', marginRight: '4px' }}>Delete?</span>
+                        <button 
+                          onClick={handleDeleteResume}
+                          style={{ ...styles.deleteBtn, padding: '6px 12px', fontSize: '12px' }}
+                        >
+                          Yes
+                        </button>
+                        <button 
+                          onClick={() => setShowDeleteConfirm(false)}
+                          style={{ ...styles.downloadBtn, padding: '6px 12px', fontSize: '12px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }}
+                        >
+                          No
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <a 
+                          href={`${API_BASE}${profile.resume_url}`} 
+                          target="_blank" 
+                          rel="noreferrer"
+                          style={styles.downloadBtn}
+                        >
+                          Download
+                        </a>
+                        <button 
+                          onClick={() => setShowDeleteConfirm(true)}
+                          style={styles.deleteBtn}
+                          title="Delete Resume"
+                        >
+                          <Trash size={16} />
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               ) : (

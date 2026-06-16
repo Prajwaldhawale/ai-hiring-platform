@@ -8,6 +8,7 @@ const MyApplications = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [expandedAppId, setExpandedAppId] = useState(null);
+  const [withdrawConfirmId, setWithdrawConfirmId] = useState(null);
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -31,9 +32,7 @@ const MyApplications = () => {
   }, [token]);
 
   const handleWithdrawApplication = async (appId) => {
-    if (!window.confirm("Are you sure you want to withdraw this application? This will permanently delete your submission and evaluation.")) {
-      return;
-    }
+    setWithdrawConfirmId(null);
     try {
       const res = await fetch(`${API_BASE}/applications/${appId}`, {
         method: 'DELETE',
@@ -130,13 +129,32 @@ const MyApplications = () => {
                       <span className={`badge ${getStatusBadge(app.status)}`}>
                         {app.status}
                       </span>
-                      <button 
-                        onClick={() => handleWithdrawApplication(app.id)}
-                        style={styles.deleteAppBtn}
-                        title="Withdraw Application"
-                      >
-                        <Trash size={16} />
-                      </button>
+                      {withdrawConfirmId === app.id ? (
+                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginLeft: '10px' }}>
+                          <button 
+                            onClick={() => handleWithdrawApplication(app.id)}
+                            style={{ ...styles.deleteAppBtn, padding: '4px 8px', fontSize: '11px', background: '#ef4444', color: '#fff', borderColor: '#ef4444' }}
+                            title="Confirm Withdraw"
+                          >
+                            Confirm
+                          </button>
+                          <button 
+                            onClick={() => setWithdrawConfirmId(null)}
+                            style={{ ...styles.deleteAppBtn, padding: '4px 8px', fontSize: '11px', background: 'rgba(255,255,255,0.08)', color: '#d1d5db', borderColor: 'rgba(255,255,255,0.15)' }}
+                            title="Cancel"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <button 
+                          onClick={() => setWithdrawConfirmId(app.id)}
+                          style={styles.deleteAppBtn}
+                          title="Withdraw Application"
+                        >
+                          <Trash size={16} />
+                        </button>
+                      )}
                     </div>
                   </div>
 

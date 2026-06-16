@@ -15,6 +15,7 @@ const JobDetails = () => {
   const [hasApplied, setHasApplied] = useState(false);
   const [checkingApp, setCheckingApp] = useState(true);
   const [existingAppId, setExistingAppId] = useState(null);
+  const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false);
   
   // File Upload
   const [file, setFile] = useState(null);
@@ -164,9 +165,7 @@ const JobDetails = () => {
   };
 
   const handleWithdrawApplication = async () => {
-    if (!window.confirm("Are you sure you want to withdraw your application? This will permanently delete your previous submission and assessment, allowing you to re-apply with a new resume.")) {
-      return;
-    }
+    setShowWithdrawConfirm(false);
     setSubmitting(true);
     setUploadError('');
     try {
@@ -255,17 +254,45 @@ const JobDetails = () => {
                   You can track its status in the applications pipeline.
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
-                  <Link to="/applications" className="btn-primary" style={{ ...styles.appliedBtn, textDecoration: 'none', textAlign: 'center' }}>
-                    View Applications
-                  </Link>
-                  <button 
-                    onClick={handleWithdrawApplication} 
-                    className="btn-secondary" 
-                    style={{ width: '100%', padding: '12px' }} 
-                    disabled={submitting}
-                  >
-                    {submitting ? 'Withdrawing...' : 'Withdraw & Re-apply'}
-                  </button>
+                  {showWithdrawConfirm ? (
+                    <div style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.15)', borderRadius: '8px', padding: '12px', textAlign: 'center' }}>
+                      <p style={{ fontSize: '13px', color: '#f87171', marginBottom: '10px' }}>
+                        Withdraw application? This will permanently delete your previous submission.
+                      </p>
+                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                        <button 
+                          onClick={handleWithdrawApplication} 
+                          className="btn-primary" 
+                          style={{ background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', padding: '6px 14px', fontSize: '12px', width: 'auto' }}
+                          disabled={submitting}
+                        >
+                          {submitting ? 'Withdrawing...' : 'Yes, Withdraw'}
+                        </button>
+                        <button 
+                          onClick={() => setShowWithdrawConfirm(false)} 
+                          className="btn-secondary" 
+                          style={{ padding: '6px 14px', fontSize: '12px', width: 'auto' }}
+                          disabled={submitting}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <Link to="/applications" className="btn-primary" style={{ ...styles.appliedBtn, textDecoration: 'none', textAlign: 'center' }}>
+                        View Applications
+                      </Link>
+                      <button 
+                        onClick={() => setShowWithdrawConfirm(true)} 
+                        className="btn-secondary" 
+                        style={{ width: '100%', padding: '12px' }} 
+                        disabled={submitting}
+                      >
+                        Withdraw & Re-apply
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             ) : (
