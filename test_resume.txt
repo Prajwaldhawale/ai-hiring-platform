@@ -1,0 +1,6 @@
+Resume: Harshal Satara
+Email: Harshal@satara.com
+Skills: Python, FastAPI, React, PostgreSQL, Docker, JavaScript, TypeScript, HTML, CSS, Git
+Experience:
+Software Engineer at Tech Solutions Inc (2 Years). Developed web applications and worked with API integrations.
+Junior Developer at Digital Labs (1 Year). Assisted in frontend UI development using React and CSS stylesheets.
